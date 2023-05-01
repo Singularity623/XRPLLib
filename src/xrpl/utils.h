@@ -5,6 +5,8 @@
 #include <stdexcept>
 #include <nlohmann/json.hpp>
 
+using namespace std;
+
 namespace xrpl 
 {
     //Utils Class for triggering the HttpRequests and Parse The Json Data
@@ -12,11 +14,11 @@ namespace xrpl
     {
         public:
             Utils(const std::string& apiUrl);
-            nlohmann::json sendRequest(const std:string& request_body);
+            nlohmann::json sendRequest(const std::string& request_body);
             std::string buildRequestBody(const std::string& method, const nlohmann::json& params);
             nlohmann::json getLatestValidatedLedger();
         private:
-            std::string apiUrl;
+            std::string _apiUrl;
     };
 
 }

@@ -1,9 +1,12 @@
 
-#include "Utils.h"
+#include "xrpl/utils.h"
 #include <iostream>
 #include <curl/curl.h>
 
-Utils::Utils(const::string& apiUrl) : apiUrl(apiUrl) {}
+using namespace std;
+using namespace xrpl;
+
+Utils::Utils(const::string& apiUrl) : _apiUrl(apiUrl) {}
 
 static size_t writeCallback(void* contents, size_t size, size_t nmemb, void* userp)
 {
@@ -15,20 +18,22 @@ nlohmann::json Utils::sendRequest(const std::string& requestBody)
 {
     CURL * curl;
     CURLcode res;
-    std::String readBuffer;
+    std::string readBuffer;
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
-    curl = curl_east_init();
+    curl = curl_easy_init();
     if(curl)
     {
-        curl_easy_Setopt(curl, CURLOPT_URL, apiUrl.c_str());
-        curl_easy_Setopt(curl, CURLOPT_POSTFIELDS, requestBody.c_str());
-        curl_easy_Setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
-        curl_easy_Setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+        curl_easy_setopt(curl, CURLOPT_URL, _apiUrl.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, requestBody.c_str());
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L); //SH: this is not validate the peer, debugging purposes
+        curl_easy_setopt(curl, CURLOPT_CAINFO, "..\\..\\ca-bundle.crt");
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
         res = curl_easy_perform(curl);
         if(res != CURLE_OK)
         {
-            std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std:endl;
+            std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
         }
         curl_easy_cleanup(curl);
     }
@@ -45,7 +50,7 @@ std::string Utils::buildRequestBody(const std::string& method, const nlohmann::j
         {"params", {params}}
     };
 
-    request.dump();
+    return request.dump();
 }
 
 nlohmann::json Utils::getLatestValidatedLedger()

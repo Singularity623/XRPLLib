@@ -1,13 +1,17 @@
 #ifndef XRPL_LEDGER_H
 #define XRPL_LEDGER_H
 
-#include <string>
+#pragma once
+
 #include "utils.h"
 
 namespace xrpl {
     class Ledger {
         public:
-            std::string getLatestValidatedLEdger() const;
+            Ledger(const Utils& utils);
+            nlohmann::json getLatestValidatedLedger();
+        private:
+            Utils _utils;
     };
 }
 

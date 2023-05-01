@@ -1,7 +1,5 @@
 
 #include "xrpl/utils.h"
-#include <iostream>
-#include <curl/curl.h>
 
 using namespace std;
 using namespace xrpl;
@@ -26,7 +24,7 @@ nlohmann::json Utils::sendRequest(const std::string& requestBody)
     {
         curl_easy_setopt(curl, CURLOPT_URL, _apiUrl.c_str());
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, requestBody.c_str());
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L); //SH: this is not validate the peer, debugging purposes
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L); //SH: this is not validate the peer, debugging
         curl_easy_setopt(curl, CURLOPT_CAINFO, "..\\..\\ca-bundle.crt");
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
@@ -51,16 +49,4 @@ std::string Utils::buildRequestBody(const std::string& method, const nlohmann::j
     };
 
     return request.dump();
-}
-
-nlohmann::json Utils::getLatestValidatedLedger()
-{
-    nlohmann::json params = {
-        {"ledger_index", "validated"}
-    };
-
-    std::string requestBody = buildRequestBody("ledger", params);
-    nlohmann::json response = sendRequest(requestBody);
-
-    return response;
 }

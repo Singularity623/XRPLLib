@@ -4,10 +4,8 @@
 #include <string>
 #include "utils.h"
 
-namespace xrpl 
-{
-    class Account 
-    {  
+namespace xrpl {
+    class Account {  
         public:
             Account(const std::string& address);
             std::string getAccountInfo() const;

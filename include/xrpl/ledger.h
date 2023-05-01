@@ -4,10 +4,8 @@
 #include <string>
 #include "utils.h"
 
-namespace xrpl 
-{
-    class Ledger 
-    {
+namespace xrpl {
+    class Ledger {
         public:
             std::string getLatestValidatedLEdger() const;
     };

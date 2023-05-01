@@ -5,19 +5,18 @@
 #include <stdexcept>
 #include <nlohmann/json.hpp>
 
-namespace xrpl {
-    
-    //Exception Class for XRPL Errors
-    class XrplException : public std::runtime_error {
-        public:
-            explicit XrplException(const std::string& message) : std::runtime_error(message) {}
-    };
-
+namespace xrpl 
+{
     //Utils Class for triggering the HttpRequests and Parse The Json Data
-    class Utils {
+    class Utils 
+    {
         public:
-            static std::string httpRequest(const std::string& url, const std::string& post_data = "");
-            static nlohmann::json parseJson(const std::string& jsonString);
+            Utils(const std::string& apiUrl);
+            nlohmann::json sendRequest(const std:string& request_body);
+            std::string buildRequestBody(const std::string& method, const nlohmann::json& params);
+            nlohmann::json getLatestValidatedLedger();
+        private:
+            std::string apiUrl;
     };
 
 }

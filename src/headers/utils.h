@@ -1,5 +1,5 @@
-#ifndef XRPL_UTILS_H
-#define XRPL_UTILS_H
+// Utils.h
+#pragma once
 
 #include <string>
 #include <stdexcept>
@@ -16,13 +16,16 @@ namespace xrpl
     {
         public:
             Utils(const std::string& apiUrl);
-            nlohmann::json sendRequest(const std::string& request_body);
+            
+            nlohmann::json sendRequest(const std::string& requestBody);
+            nlohmann::json sendRequest(const std::string& command, const nlohmann::json& params);
+            
             std::string buildRequestBody(const std::string& method, const nlohmann::json& params);
             
         private:
             std::string _apiUrl;
+
+            std::string buildRequestPayload(const std::string& command, const nlohmann::json& params);
     };
 
 }
-
-#endif

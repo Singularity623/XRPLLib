@@ -40,6 +40,13 @@ nlohmann::json Utils::sendRequest(const std::string& requestBody)
 
     return nlohmann::json::parse(readBuffer);
 }
+nlohmann::json Utils::sendRequest(const std::string& command, const nlohmann::json& params)
+{
+    std::string payload = buildRequestPayload(command, params);
+
+    return Utils::sendRequest(payload);
+}
+
 
 std::string Utils::buildRequestBody(const std::string& method, const nlohmann::json& params)
 {
@@ -47,6 +54,21 @@ std::string Utils::buildRequestBody(const std::string& method, const nlohmann::j
         {"method", method},
         {"params", {params}}
     };
+
+    return request.dump();
+}
+
+std::string Utils::buildRequestPayload(const std::string& command, const nlohmann::json& params)
+{
+    nlohmann::json request = {
+        {"id", 1},
+        {"jsonrpc", "2.0"},
+        {"method", command}
+    };
+
+    if(!params.empty()) {
+        request["params"] = {params};
+    }
 
     return request.dump();
 }

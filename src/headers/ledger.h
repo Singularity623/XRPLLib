@@ -11,12 +11,12 @@ namespace xrpl {
             Ledger(const Utils& utils);
             nlohmann::json getLatestValidatedLedger();
 
-            nlohmann::json getLedger(const std::string& options);
-            nlohmann::json getLedgerEntry(const std::string& options);
-            nlohmann::json getLedgerHeader(const std::string& options);
+            nlohmann::json getLedger(const std::string& params);
+            nlohmann::json getLedgerEntry(const std::string& params);
+            nlohmann::json getLedgerHeader(const std::string& params);
             nlohmann::json ledgerClosed();
             nlohmann::json ledgerCurrent();
-            nlohmann::json ledgerData(const std::string& options);
+            nlohmann::json ledgerData(const std::string& params);
 
         private:
             Utils _utils;

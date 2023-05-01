@@ -1,4 +1,3 @@
-#include <iostream>
 #include "headers/ledger.h"
 
 using namespace xrpl;

@@ -1,10 +1,14 @@
 // ledger.h
 #pragma once
 
+#include <string>
+#include <nlohmann/json.hpp>
 #include "utils.h"
 
-namespace xrpl {
-    class Ledger {
+namespace xrpl 
+{
+    class Ledger 
+    {
         public:
             Ledger(const Utils& utils);
             nlohmann::json getLatestValidatedLedger();

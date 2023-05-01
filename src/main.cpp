@@ -11,6 +11,12 @@ int main()
 
     std::cout << "Latest validated ledger: " << latestLedger << std::endl;
 
+    std::cout << "Press Enter to see ledger closed." << std::endl;
+    //std::cin.get();
+
+    nlohmann::json ledgerClosedResult = ledger.ledgerClosed();
+    std::cout << "Ledger Closed: " << ledgerClosedResult << std::endl;
+
     std::cout << "Press Enter to exit." << std::endl;
     std::cin.get();
 

@@ -26,6 +26,8 @@ namespace xrpl
             std::string _apiUrl;
 
             std::string buildRequestPayload(const std::string& command, const nlohmann::json& params);
+
+            nlohmann::json processResponse(const nlohmann::json& response);
     };
 
 }

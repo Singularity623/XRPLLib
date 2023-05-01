@@ -60,15 +60,33 @@ std::string Utils::buildRequestBody(const std::string& method, const nlohmann::j
 
 std::string Utils::buildRequestPayload(const std::string& command, const nlohmann::json& params)
 {
+    // nlohmann::json payload = {
+    //     {"id", 1},
+    //     {"jsonrpc", "2.0"},
+    //     {"method", command}
+    // };
+
+    //  if(!params.empty()) {
+    //      payload["params"] = {params};
+    //  }
+
+
     nlohmann::json request = {
-        {"id", 1},
-        {"jsonrpc", "2.0"},
-        {"method", command}
+        {"method","ledger_closed"},
+        {"params", {params}}
     };
 
-    if(!params.empty()) {
-        request["params"] = {params};
+    return request.dump();
+}
+
+nlohmann::json Utils::processResponse(const nlohmann::json& response)
+{
+    if(response.contains("error"))
+    {
+        std::cerr << "Error in JSON-RPC response: " << response["error"]["message"] << std::endl;
+
+        return nlohmann::json::object();
     }
 
-    return request.dump();
+    return response["result"];
 }

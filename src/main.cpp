@@ -19,6 +19,9 @@ int main()
     nlohmann::json ledgerResult = ledger.getLedger(std::nullopt);
     std::cout << "Current Ledger: " << std::endl << ledgerResult << std::endl;
 
+    nlohmann::json ledgerClosedResult = ledger.ledgerClosed();
+    std::cout << "Ledger Closed: " << ledgerClosedResult << std::endl;
+
     std::cout << "Press Enter to exit." << std::endl;
     std::cin.get();
 

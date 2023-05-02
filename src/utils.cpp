@@ -101,14 +101,14 @@ nlohmann::json Utils::buildRequestBody(const std::string& command, const nlohman
     return request;
 }
 
-nlohmann::json Utils::processResponse(const nlohmann::json& response)
-{
-    if(response.contains("error"))
-    {
-        std::cerr << "Error in JSON-RPC response: " << response["error"]["message"] << std::endl;
+// nlohmann::json Utils::processResponse(const nlohmann::json& response)
+// {
+//     if(response.contains("error"))
+//     {
+//         std::cerr << "Error in JSON-RPC response: " << response["error"]["message"] << std::endl;
 
-        return nlohmann::json::object();
-    }
+//         return nlohmann::json::object();
+//     }
 
-    return response["result"];
-}
+//     return response["result"];
+// }

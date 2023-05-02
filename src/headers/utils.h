@@ -18,16 +18,11 @@ namespace xrpl
             Utils(const std::string& apiUrl);
             
             bool sendRequest(const std::string& request, std::string& response);
-            //nlohmann::json sendRequest(const std::string& command, const nlohmann::json& params);
             
             nlohmann::json buildRequestBody(const std::string& method, const nlohmann::json& params);
             
         private:
             std::string _apiUrl;
-
-            //std::string buildRequestPayload(const std::string& command, const nlohmann::json& params);
-
-            nlohmann::json processResponse(const nlohmann::json& response);
     };
 
 }

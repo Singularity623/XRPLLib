@@ -12,53 +12,63 @@ static size_t writeCallback(void* contents, size_t size, size_t nmemb, void* use
     return size * nmemb;
 }
 
-nlohmann::json Utils::sendRequest(const std::string& requestBody)
+bool Utils::sendRequest(const std::string& request, std::string& response)
 {
     CURL * curl;
     CURLcode res;
-    std::string readBuffer;
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
     curl = curl_easy_init();
-    if(curl)
+
+    if(!curl)
     {
-        curl_easy_setopt(curl, CURLOPT_URL, _apiUrl.c_str());
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, requestBody.c_str());
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L); //SH: this is not validate the peer, debugging
-        curl_easy_setopt(curl, CURLOPT_CAINFO, "..\\..\\ca-bundle.crt");
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
-        res = curl_easy_perform(curl);
-        if(res != CURLE_OK)
-        {
-            std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
-        }
-        curl_easy_cleanup(curl);
+        std::cerr << "Error: Unable to initialize cURL" << std::endl;
+        return false;
     }
 
+    curl_easy_setopt(curl, CURLOPT_URL, _apiUrl.c_str());
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, request.c_str());
+
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L); //SH: this is not validate the peer, debugging
+    curl_easy_setopt(curl, CURLOPT_CAINFO, "..\\..\\ca-bundle.crt");
+
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+    res = curl_easy_perform(curl);
+    if(res != CURLE_OK)
+    {
+        std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+
+        curl_easy_cleanup(curl);
+        curl_global_cleanup();
+        return false;
+    }
+
+    curl_easy_cleanup(curl);
     curl_global_cleanup();
-
-    return nlohmann::json::parse(readBuffer);
+    return true;
+    //return nlohmann::json::parse(response);
 }
-nlohmann::json Utils::sendRequest(const std::string& command, const nlohmann::json& params)
-{
-    std::string payload = buildRequestPayload(command, params);
+// nlohmann::json Utils::sendRequest(const std::string& command, const nlohmann::json& params)
+// {
+//     std::string payload = buildRequestPayload(command, params);
 
-    return Utils::sendRequest(payload);
-}
+//     return Utils::sendRequest(payload);
+// }
 
 
-std::string Utils::buildRequestBody(const std::string& method, const nlohmann::json& params)
-{
-    nlohmann::json request = {
-        {"method", method},
-        {"params", {params}}
-    };
+// std::string Utils::buildRequest(const std::string& method, const nlohmann::json& params)
+// {
+//     nlohmann::json request = {
+//         {"method", method},
+//         {"params", {params}}
+//     };
 
-    return request.dump();
-}
+//     return request.dump();
+// }
 
-std::string Utils::buildRequestPayload(const std::string& command, const nlohmann::json& params)
+nlohmann::json Utils::buildRequestBody(const std::string& command, const nlohmann::json& params)
 {
     // nlohmann::json payload = {
     //     {"id", 1},
@@ -70,13 +80,25 @@ std::string Utils::buildRequestPayload(const std::string& command, const nlohman
     //      payload["params"] = {params};
     //  }
 
+    // nlohmann::json request = {
+    //     {"method",command}
+    // };
+
+    // if(params) {
+    //     try {
+    //         request["params"] = {params};
+    //     } catch (const nlohmann::json::parse_error& e) {
+    //         std::cerr << "Error: Unable to parse options string: " << e.what() << std::endl;
+    //         return nlohmann::json::object();
+    //     }
+    // }
 
     nlohmann::json request = {
-        {"method","ledger_closed"},
-        {"params", {params}}
+        {"method",command},
+        {"params",nlohmann::json::array({params})}
     };
 
-    return request.dump();
+    return request;
 }
 
 nlohmann::json Utils::processResponse(const nlohmann::json& response)
